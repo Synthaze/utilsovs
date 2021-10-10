@@ -1,4 +1,4 @@
-# Utilsovs Package - v0.9.1b4
+# Utilsovs Package - v0.9.2
 
 Utils derived from the [O-GlcNAc Database](https://www.oglcnac.mcw.edu/) code source.
 
