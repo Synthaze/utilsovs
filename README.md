@@ -1,8 +1,9 @@
-# Utilsovs Package - v0.9.2
+# Utilsovs - 0.9.2a
+=======
 
 Utils derived from the [O-GlcNAc Database](https://www.oglcnac.mcw.edu/) code source.
 
-This is a beta release. Please report any bugs or incompatibilities.
+Please report any bugs or incompatibilities.
 
 If you use *utilsovs* in your academic work, please cite:
 
@@ -32,7 +33,7 @@ The package utilsovs contains:
 ### API wrappers - Proteins from UniProtKB ID
 
 ```python
-from utilsovs.utilsovs_main import *
+from utilsovs.main import *
 
 # Fetch UniProtKB Proteins REST API (@data.url)
 data = fetch_one_UniProtKB('P08047',filepath='out.json',pprint=False)
@@ -51,7 +52,7 @@ print (data.data)
 ### API wrappers - Literature from PubMed IDentifier (PMID)
 
 ```python
-from utilsovs.utilsovs_main import *
+from utilsovs.main import *
 
 # Fetch MedLine/PubMed API using Entrez.efetch (@data.url)
 data = fetch_one_PubMed('33479245',db="pubmed",filepath='out.json',pprint=False)
@@ -70,7 +71,7 @@ print (data.data)
 ### Compute - Digest protein, match residuePosition on sequence or calculate log2(odds) from alignment file and draw consensus sequence logo
 
 ```python
-from utilsovs.utilsovs_main import *
+from utilsovs.main import *
 
 # Full digestion of a UniProtKB ID protein sequence: [ ['PEPTIDE',(start,end),mw_monoisotopic,mw_average], ... ]
 data = compute_one_fullDigest('P13693','Trypsin',filepath='out.json')
@@ -98,7 +99,7 @@ print (data.data)
 ### Text Processing
 
 ```python
-from utilsovs.utilsovs_main import *
+from utilsovs.main import *
 
 # PDF to Text conversion using GNU pdftotext (Linux/Mac) or Tika (Windows) and text repair + cleaning.
 data = pdf_one_pdf2text('test.pdf',filepath='out.dat',clean=True)
@@ -113,7 +114,7 @@ print (data.data)
 Functions below return Python objects or variables.
 
 ```python
-from utilsovs.utilsovs_main import *
+from utilsovs.main import *
 
 # Show list of proteases for digest utils
 show_proteases()
@@ -128,7 +129,7 @@ compute_one_MW('EWENMR',filepath='out.json')
 get_one_freqAAdict(organism='HUMAN',filepath='out.json')
 
 #Clear all data in utilsovs cache
-utilsovs_clearCache()
+clearCache()
 
 
 ```
