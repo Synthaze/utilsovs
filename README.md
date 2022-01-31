@@ -32,7 +32,7 @@ The package utilsovs contains:
 ### API wrappers - Proteins from UniProtKB ID
 
 ```python
-from utilsovs.main import *
+from utilsovs import *
 
 # Fetch UniProtKB Proteins REST API (@data.url)
 data = fetch_one_UniProtKB('P08047',filepath='out.json',pprint=False)
@@ -51,7 +51,7 @@ print (data.data)
 ### API wrappers - Literature from PubMed IDentifier (PMID)
 
 ```python
-from utilsovs.main import *
+from utilsovs import *
 
 # Fetch MedLine/PubMed API using Entrez.efetch (@data.url)
 data = fetch_one_PubMed('33479245',db="pubmed",filepath='out.json',pprint=False)
@@ -70,7 +70,7 @@ print (data.data)
 ### Compute - Digest protein, match residuePosition on sequence or calculate log2(odds) from alignment file and draw consensus sequence logo
 
 ```python
-from utilsovs.main import *
+from utilsovs import *
 
 # Full digestion of a UniProtKB ID protein sequence: [ ['PEPTIDE',(start,end),mw_monoisotopic,mw_average], ... ]
 data = compute_one_fullDigest('P13693','Trypsin',filepath='out.json')
@@ -98,7 +98,7 @@ print (data.data)
 ### Text Processing
 
 ```python
-from utilsovs.main import *
+from utilsovs import *
 
 # PDF to Text conversion using GNU pdftotext (Linux/Mac) or Tika (Windows) and text repair + cleaning.
 data = pdf_one_pdf2text('test.pdf',filepath='out.dat',clean=True)
@@ -113,7 +113,7 @@ print (data.data)
 Functions below return Python objects or variables.
 
 ```python
-from utilsovs.main import *
+from utilsovs import *
 
 # Show list of proteases for digest utils
 show_proteases()
