@@ -3,13 +3,25 @@ from utilsovs.globals import COLORSCHEME
 from pygments import highlight, lexers, formatters
 import requests
 import pickle
+import time
 import json
 import sys
 import re
 
 def request_API_json(data):
+    data.id = data.id.split('-')[0] if data.id.endswith('-0') else data.id
     data.url = data.url + data.id
-    r = requests.get(data.url, headers={"Accept": "application/json"},verify=False)
+
+    n = 0
+
+    while n < 5:
+        try:
+            r = requests.get(data.url, headers={"Accept": "application/json"},verify=False)
+            break
+        except:
+            time.sleep(5)
+            n += 1
+
     try:
         data.data = json.loads(r.text)
     except:
@@ -48,20 +60,6 @@ def read_file(f):
     with open(f, 'r') as fp:
         data = fp.read()
     return data
-
-def control_PMID(id):
-    if re.match(r"^[0-9]+$",id):
-        print ("PMID %s is valid" % id)
-    else:
-        print ("PMID %s is not a valid PMID, sys.exit() now..." % id)
-        sys.exit()
-
-def control_UniProtKB(id):
-    if re.match(r"^[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}$",id):
-        print ("UniProtKB ID %s is valid" % id)
-    else:
-        print ("UniProtKB ID %s is not a valid UniProtKB ID, sys.exit() now..." % id)
-        sys.exit()
 
 def init_dict_aa():
     d = {}

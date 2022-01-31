@@ -5,8 +5,11 @@ from utilsovs.commons import read_file
 import platform
 import os
 import re
+import json
+import requests
 
-def request_MedLine_API(data,db):
+
+def request_MedLine_API(data, db):
 
     Entrez.email = 'email@server.com'
 
@@ -15,6 +18,61 @@ def request_MedLine_API(data,db):
     data.data = Entrez.read(data.data)
 
     return data
+
+
+def search_MedLine_API(data, db):
+
+    Entrez.email = 'email@server.com'
+
+    data.data = Entrez.esearch(db=db,
+                               sort='relevance',
+                               retmax='100000',
+                               retmode='json',
+                               term=data.id)
+
+    data.data = json.load(data.data)['esearchresult']
+
+    return data
+
+
+def altsearch_MedLine_API(request, db):
+
+    Entrez.email = 'email@server.com'
+
+    data = Entrez.esearch(db=db,
+                          sort='relevance',
+                          retmax='100000',
+                          retmode='json',
+                          term=request)
+
+    data = json.load(data)['esearchresult']
+
+    return data
+
+
+def download_PubMed_OA(data):
+
+    data.url = 'https://pubmed.ncbi.nlm.nih.gov/' + data.id
+
+    print(data.url)
+
+    r = requests.get(data.url).text
+
+    try:
+        data.url = 'https://www.ncbi.nlm.nih.gov/pmc/articles/'
+
+        for x in r.split('/pmc/articles/'):
+            print(x.split('"')[0])
+
+        data.url = data.url + x.split('"')[0]
+
+        print(data.url)
+
+    except:
+        print(False)
+
+    return data
+
 
 def one_pdf2text(data):
     if platform.system() == 'Windows':

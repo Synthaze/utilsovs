@@ -1,9 +1,9 @@
 from utilsovs.models import proteinData, pmidData, digestData, genData, matchData, alignData, dataData
-from utilsovs.commons import write_file, pretty_json, control_PMID, control_UniProtKB, read_file, write_json, read_json
+from utilsovs.commons import write_file, pretty_json, read_file, write_json, read_json
 from utilsovs.uniprot import request_uniprotKB_API, get_one_sequence_auto
 from utilsovs.oglcnacDB import request_oglcnacDB_API
 from utilsovs.glygen import request_GlyGen_API
-from utilsovs.pubmed import request_MedLine_API, one_pdf2text, clean_pdf2text
+from utilsovs.pubmed import request_MedLine_API, one_pdf2text, clean_pdf2text, search_MedLine_API, download_PubMed_OA
 from utilsovs.semantic import request_SemanticScholar_API
 from utilsovs.proteome import request_proteomeXchange
 from utilsovs.prepare import get_aaSprot_freqTable
@@ -23,7 +23,6 @@ import os
 
 # Fetch UniProtKB Proteins REST API (@data.url)
 def fetch_one_UniProtKB(id,filepath=None,pprint=True):
-    control_UniProtKB(id)
     data = proteinData(id,filepath,inspect.stack()[0][3])
     data = request_uniprotKB_API(data)
     if pprint == True:
@@ -33,7 +32,6 @@ def fetch_one_UniProtKB(id,filepath=None,pprint=True):
 
 # Fetch The O-GlcNAc Database Proteins REST API (@data.url)
 def fetch_one_oglcnacDB(id,filepath=None,pprint=True):
-    control_UniProtKB(id)
     data = proteinData(id,filepath,inspect.stack()[0][3])
     data = request_oglcnacDB_API(data)
     if pprint == True:
@@ -43,7 +41,6 @@ def fetch_one_oglcnacDB(id,filepath=None,pprint=True):
 
 # Fetch RESTful Glygen webservice-based APIs (@data.url)
 def fetch_one_GlyGen(id,filepath=None,pprint=True):
-    control_UniProtKB(id)
     data = proteinData(id,filepath,inspect.stack()[0][3])
     data = request_GlyGen_API(data)
     if pprint == True:
@@ -55,7 +52,6 @@ def fetch_one_GlyGen(id,filepath=None,pprint=True):
 
 # Fetch MedLine/PubMed API using Entrez.efetch (@data.url)
 def fetch_one_PubMed(id,db="pubmed",filepath=None,pprint=True):
-    control_PMID(id)
     data = pmidData(id,filepath,inspect.stack()[0][3])
     data = request_MedLine_API(data,db)
     if pprint == True:
@@ -65,7 +61,6 @@ def fetch_one_PubMed(id,db="pubmed",filepath=None,pprint=True):
 
 # Fetch Semantic Scholar API (@data.url)
 def fetch_one_SemanticScholar(id,filepath=None,pprint=True):
-    control_PMID(id)
     data = pmidData(id,filepath,inspect.stack()[0][3])
     data = request_SemanticScholar_API(data)
     if pprint == True:
@@ -75,12 +70,28 @@ def fetch_one_SemanticScholar(id,filepath=None,pprint=True):
 
 # Fetch proteomeXchange using GET search request (@data.url)
 def fetch_one_proteomeXchange(id,filepath=None,pprint=True):
-    control_PMID(id)
     data = pmidData(id,filepath,inspect.stack()[0][3])
-    data = request_SemanticScholar_API(data)
+    data = request_proteomeXchange(data)
     if pprint == True:
         pretty_json(data)
     write_json(data)
+    return data
+
+
+# Search MedLine/PubMed API using Entrez.efetch (@data.url)
+def search_one_PubMed(id, db="pubmed", filepath=None, pprint=True):
+    data = pmidData(id,filepath,inspect.stack()[0][3])
+    data = search_MedLine_API(data,db)
+    if pprint == True:
+        pretty_json(data)
+    write_json(data)
+    return data
+
+
+# Download from pubmed open access (@data.url)
+def download_one_PubMed(id, filepath=None):
+    data = pmidData(id,filepath,inspect.stack()[0][3])
+    data = download_PubMed_OA(data)
     return data
 
 ### Compute utils
@@ -89,7 +100,6 @@ def fetch_one_proteomeXchange(id,filepath=None,pprint=True):
 
 # Full digestion of a UniProtKB ID protein sequence: [ ['PEPTIDE',(start,end),mw_monoisotopic,mw_average], ... ]
 def compute_one_fullDigest(id,protease,filepath=None):
-    control_UniProtKB(id)
     data = digestData(id,protease,filepath,inspect.stack()[0][3])
     data = get_one_sequence_auto(data)
     data = compute_splitSeq(data)
@@ -99,7 +109,6 @@ def compute_one_fullDigest(id,protease,filepath=None):
 
 # Partial digestion of a UniProtKB ID protein sequence: [ ['PEPTIDE',(start,end),mw_monoisotopic,mw_average], ... ] - All possible combinations are generated
 def compute_one_partialDigest(id,protease,filepath=None):
-    control_UniProtKB(id)
     data = digestData(id,protease,filepath,inspect.stack()[0][3])
     data = get_one_sequence_auto(data)
     data = compute_splitSeq(data)
@@ -110,7 +119,6 @@ def compute_one_partialDigest(id,protease,filepath=None):
 
 # Match residuePosition with UniProtKB ID protein sequence
 def compute_match_aaSeq(id,res,filepath=None):
-    control_UniProtKB(id)
     data = matchData(id,filepath,res,inspect.stack()[0][3])
     data = get_one_sequence_auto(data)
     data = get_one_match(data)
@@ -160,7 +168,6 @@ def show_proteases():
 
 # Return protein sequence from UniProtKB ID
 def get_one_sequence(id,filepath=None):
-    control_UniProtKB(id)
     data = proteinData(id,filepath,inspect.stack()[0][3])
     data.data = get_one_sequence_auto(data).sequence
     write_json(data)
