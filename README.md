@@ -1,4 +1,4 @@
-# Utilsovs - 0.9.4
+# Utilsovs - 0.9
 
 Utils derived from the [O-GlcNAc Database](https://www.oglcnac.mcw.edu/) code source.
 
